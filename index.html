@@ -2,88 +2,412 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste Direto - WiinPay API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Caixa Tem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
-        #pix-container { margin-top: 20px; padding: 15px; border: 1px solid #ccc; text-align: center; }
-        .hidden { display: none; }
-        textarea { width: 300px; margin: 10px 0; }
-        button { padding: 10px 15px; cursor: pointer; }
-        #error-message { color: red; margin-top: 15px; font-weight: bold; }
+        :root {
+            --azul-header: #0d65b5;
+            --azul-principal: #0072c6;
+            --azul-botao: #1e88e5;
+            --azul-icone-fundo: #e3f2fd;
+            --texto-branco: #ffffff;
+            --texto-preto: #212121;
+            --texto-cinza: #666e7a;
+            --texto-cinza-claro: #9e9e9e;
+            --fundo-app: #f0f4f8;
+            --cinza-borda: #e0e0e0;
+            --cinza-icone-fundo: #eceff1;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: #ccc;
+        }
+
+        .app-container {
+            max-width: 400px;
+            margin: auto;
+            background-color: var(--fundo-app);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Simulação da Status Bar do Celular */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 15px;
+            background-color: var(--azul-header);
+            color: var(--texto-branco);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .status-bar-icons { display: flex; gap: 8px; font-size: 14px; }
+
+
+        .header {
+            background-color: var(--azul-header);
+            padding: 5px 20px 20px 20px;
+            color: var(--texto-branco);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .header .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info .avatar {
+            font-size: 24px;
+            background-color: var(--texto-branco);
+            color: var(--azul-principal);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .user-info .avatar svg { width: 26px; height: 26px; }
+
+        .user-info .details p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .user-info .details span {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .user-info .share-icon {
+            color: var(--texto-branco);
+            padding: 10px;
+            margin-left: auto;
+        }
+        .user-info .share-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+
+        .balance {
+            display: flex;
+            align-items: center;
+            margin-top: 25px;
+        }
+        .balance .currency {
+            background-color: var(--texto-branco);
+            color: var(--azul-principal);
+            padding: 8px 12px;
+            border-radius: 20px 0 0 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .balance .show-balance {
+            background-color: var(--azul-botao);
+            color: var(--texto-branco);
+            padding: 8px 15px;
+            border-radius: 0 20px 20px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 400;
+            border-left: 1px solid #4a9fe4;
+        }
+        .balance .transfer-icon { margin-left: auto; color: var(--texto-branco); }
+        .balance .transfer-icon svg { width: 22px; height: 22px; fill: currentColor; }
+
+        .main-content { flex-grow: 1; }
+
+        .search-bar {
+            padding: 15px 15px 10px 15px;
+            position: relative;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid #e3e3e3;
+            border-radius: 25px;
+            box-sizing: border-box;
+            background-color: white;
+            font-size: 16px;
+        }
+        .search-bar input::placeholder { color: var(--texto-cinza-claro); font-weight: 400; }
+        .search-bar .search-icon { position: absolute; left: 32px; top: 28px; color: var(--texto-cinza-claro); }
+        .search-bar .search-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .content-padding { padding: 0 15px; }
+
+        h2 {
+            font-size: 17px;
+            color: var(--texto-preto);
+            margin: 15px 0 20px 0;
+            font-weight: 500;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .action-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .action-item .icon-wrapper {
+            background-color: var(--azul-icone-fundo);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            color: var(--azul-principal);
+        }
+        .action-item .icon-wrapper svg { width: 30px; height: 30px; fill: currentColor; }
+        .action-item .bolsa-familia-icon { width: 35px; }
+        .action-item span {
+            font-size: 13px;
+            color: var(--texto-cinza);
+            line-height: 1.3;
+            font-weight: 400;
+        }
+        
+        .services-list {
+             background-color: #fff;
+             border-radius: 12px;
+             padding: 5px 15px;
+             margin-bottom: 100px;
+             border: 1px solid #e9edf0;
+        }
+        .services-list .service-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .services-list .service-item:last-child { border-bottom: none; }
+        .services-list .icon-container {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .services-list .icon-container.bolsa { background-color: var(--azul-icone-fundo); }
+        .services-list .icon-container.bolsa img { width: 30px; }
+        .services-list .icon-container.lock { background-color: var(--cinza-icone-fundo); color: var(--azul-principal); }
+        .services-list .icon-container.lock svg { width: 24px; height: 24px; fill: currentColor; }
+        .services-list .service-details { flex-grow: 1; }
+        .services-list .service-details p {
+            margin: 0 0 2px 0;
+            font-weight: 500;
+            color: var(--texto-preto);
+            font-size: 16px;
+        }
+        .services-list .service-details span {
+            font-size: 14px;
+            color: var(--texto-cinza);
+        }
+        .services-list .date {
+            font-size: 12px;
+            color: var(--texto-cinza);
+            align-self: flex-start;
+            padding-top: 3px;
+            font-weight: 400;
+        }
+        
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--cinza-borda);
+            padding: 8px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 400px;
+            background-color: #fdfdfd;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--texto-cinza); cursor: pointer; }
+        .nav-item.active { color: var(--azul-principal); }
+        .nav-item .icon { height: 24px; margin-bottom: 4px; }
+        .nav-item .icon svg { width: 22px; height: 22px; }
+        .nav-item .icon .inactive { display: block; fill: var(--texto-cinza); }
+        .nav-item .icon .active { display: none; fill: var(--azul-principal); }
+        .nav-item.active .icon .inactive { display: none; }
+        .nav-item.active .icon .active { display: block; }
+
+        .notifications-icon { position: relative; }
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -5px;
+            background-color: #f57c00;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid #fdfdfd;
+        }
     </style>
 </head>
 <body>
+    <div class="app-container">
+        
+        <div class="status-bar">
+            <span>22:12</span>
+            <div class="status-bar-icons">
+                 <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512" fill="white"><path d="M211.2 32.2C200.7 18.2 182.4 12.3 164.6 18.9L32.6 62.1C12.1 69.5 0 88.3 0 109.8V402.2c0 21.5 12.1 40.3 32.6 47.7L164.6 493.1c17.8 6.6 36.1 .7 46.6-13.3S211.3 450 200.7 436L89.6 384H320v32c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H352c-17.7 0-32 14.3-32 32v32H89.6L200.7 76c10.6-14 4.7-32.3-9.4-42.9zM448 80h96V416h-96V80zM576 80h32c17.7 0 32 14.3 32 32V384c0 17.7-14.3 32-32 32h-32V80z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" fill="white"><path d="M342.6 2.6c-4.8-3.4-11.2-3.6-16.1-.5L64.9 126.8C59.2 130.8 56 136.9 56 143.5V464c0 13.3 10.7 24 24 24H304c13.3 0 24-10.7 24-24V143.5c0-6.7-3.2-12.8-8.9-16.7L184.5 2.1c-4.9-3.1-11.3-2.9-16.1.5zM128 416a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm64-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm64 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+            </div>
+        </div>
 
-    <h1>Teste de API WiinPay no GitHub Pages</h1>
-    <button id="pay-button">Gerar PIX de Teste (R$ 5,00)</button>
+        <header class="header">
+            <img src="https://logodownload.org/wp-content/uploads/2020/03/caixa-tem-logo.png" alt="Caixa Tem Logo" class="logo">
+            <div class="user-info">
+                <div class="avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0S96 57.3 96 128s57.3 128 128 128zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>
+                </div>
+                <div class="details">
+                    <p>Olá</p>
+                    <span>3880 1288 918818371-3</span>
+                </div>
+                <a href="#" class="share-icon">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M352 320c-22.6 0-43.4 7.8-60.1 20.9l-103-70.1c1.2-5.3 1.8-10.7 1.8-16.3s-.6-11-1.8-16.3l103-70.1c16.7 13.1 37.5 20.9 60.1 20.9 53 0 96-43 96-96s-43-96-96-96-96 43-96 96c0 5.6 .6 11 1.8 16.3L154.1 183.1C137.4 170 116.6 162.2 96 162.2c-53 0-96 43-96 96s43 96 96 96c20.6 0 39.4-7.8 54.1-20.9l103.8 70.1c-1.2 5.3-1.9 10.7-1.9 16.3 0 53 43 96 96 96s96-43 96-96-43-96-96-96z"/></svg>
+                </a>
+            </div>
+            <div class="balance">
+                <span class="currency">R$</span>
+                <button class="show-balance">Mostrar saldo</button>
+                <div class="transfer-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 96l320 0c53 0 96 43 96 96s-43 96-96 96L32 288c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c88.4 0 160-71.6 160-160s-71.6-160-160-160L32 32C14.3 32 0 46.3 0 64s14.3 32 32 32zM480 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l-320 0c-53 0-96 43-96 96s43 96 96 96l320 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-320 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l320 0c88.4 0 160-71.6 160-160c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96l-320 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l320 0c17.7 0 32-14.3 32-32s-14.3-32-32-32z"/></svg>
+                </div>
+            </div>
+        </header>
 
-    <div id="pix-container" class="hidden">
-        <h2>PIX Gerado!</h2>
-        <p>Use o Pix Copia e Cola:</p>
-        <textarea id="pix-brcode" rows="4" readonly></textarea>
-    </div>
+        <main class="main-content">
+            <div class="search-bar">
+                 <div class="search-icon">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                 </div>
+                <input type="text" placeholder="Buscar conversa">
+            </div>
 
-    <div id="error-message" class="hidden"></div>
-
-    <script>
-        // =================================================================================
-        // ATENÇÃO! A CHAVE ABAIXO ESTARÁ PÚBLICA E VISÍVEL PARA TODOS.
-        // =================================================================================
-        const SUA_CHAVE_API = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im9kYXZpZGRhcmtAZ21haWwuY29tIiwiaWF0IjoxNzU4NzQwNzIxfQ.keQhDlUPMmLLHVBJLUX0GzUDkh9OKD37Qck020De5z4';
-
-
-        const payButton = document.getElementById('pay-button');
-        const pixContainer = document.getElementById('pix-container');
-        const brCodeText = document.getElementById('pix-brcode');
-        const errorMessage = document.getElementById('error-message');
-
-        payButton.addEventListener('click', async () => {
-            payButton.disabled = true;
-            payButton.textContent = 'Gerando...';
-            pixContainer.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            
-            // Dados que serão enviados para a API da WiinPay
-            const paymentData = {
-                "api_key": SUA_CHAVE_API,
-                "value": 5.00,
-                "name": "Teste GitHub Pages",
-                "email": "teste@github.com",
-                "description": "Teste de funcionalidade da API",
-                "webhook_url": "https://webhook.com/",
-            };
-
-            try {
-                // Chamada direta para a API da WiinPay
-                const response = await fetch('https://api.wiinpay.com.br/payment/create', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(paymentData)
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    let errorMsg = `Erro ${response.status}: `;
-                    errorMsg += data.error || 'Não foi possível gerar o pagamento.';
-                    throw new Error(errorMsg);
-                }
+            <div class="content-padding">
+                <section>
+                    <h2>Movimente sua conta</h2>
+                    <div class="action-grid">
+                        <div class="action-item">
+                            <div class="icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.13 2.062L5.253 9.938a3.297 3.297 0 00-.976 2.344v7.375c0 .344.281.625.625.625h7.375a3.297 3.297 0 002.344-.976l7.875-7.875a.623.623 0 000-.883l-8.47-8.47a.626.626 0 00-.884 0zm-1.095 2.19l6.547 6.547-7.22 7.218H4.02v-7.344l7.22-7.22L12.036 4.25zM15.25 8a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg>
+                            </div>
+                            <span>Pix</span>
+                        </div>
+                        <div class="action-item">
+                            <div class="icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 10a1 1 0 0 1 1-1h.01a1 1 0 0 1 0 2H13a1 1 0 0 1-1-1Zm-3 0a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H10a1 1 0 0 1-1-1Zm-3 0a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1Zm12.5-5.996C17.53 2.866 15.405 2 13 2s-4.53.866-6.5 2.004C4.53 5.14 3 7.022 3 9.11V18.5c0 .828.672 1.5 1.5 1.5h15c.828 0 1.5-.672 1.5-1.5V9.11c0-2.088-1.53-3.97-3.5-5.106ZM19.5 18H5V9.11c0-1.428 1.05-2.73 2.84-3.552C9.531 4.73 11.237 4 13 4s3.469.73 5.16 1.558C19.95 6.38 21 7.681 21 9.11V18h-1.5Z M8 13.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm4.5 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm4.5 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"></path></svg>
+                            </div>
+                            <span>Receba com Pix</span>
+                        </div>
+                        <div class="action-item">
+                            <div class="icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#a)"><path d="M4 19h16V5H4v14Zm1-6h2v4H5v-4Zm3 0h2v4H8v-4Zm3 0h2v4h-2v-4Zm3 0h2v4h-2v-4Zm3 0h2v4h-2v-4Z"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h24v24H0z"></path></clipPath></defs></svg>
+                            </div>
+                            <span>Pague suas contas</span>
+                        </div>
+                        <div class="action-item">
+                            <div class="icon-wrapper">
+                               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 22H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2Zm-8-15v5h5L12 7Z M8 17h8v-2H8v2Zm0-4h8v-2H8v2Z"></path></svg>
+                            </div>
+                            <span>Extrato</span>
+                        </div>
+                        <div class="action-item">
+                             <div class="icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM8 6h8v2H8V6Zm0 4h8v2H8v-2Zm0 4h5v2H8v-2Z"></path></svg>
+                            </div>
+                            <span>Pague na maquininha</span>
+                        </div>
+                        <div class="action-item">
+                           <div class="icon-wrapper">
+                                <img src="https://logodownload.org/wp-content/uploads/2020/06/bolsa-familia-logo-0.png" alt="Bolsa Família" class="bolsa-familia-icon">
+                            </div>
+                            <span>Bolsa Família</span>
+                        </div>
+                    </div>
+                </section>
                 
-                brCodeText.value = data.brcode;
-                pixContainer.classList.remove('hidden');
+                <section>
+                    <h2>Serviços e Produtos</h2>
+                    <div class="services-list">
+                        <div class="service-item">
+                            <div class="icon-container bolsa">
+                                <img src="https://logodownload.org/wp-content/uploads/2020/06/bolsa-familia-logo-0.png" alt="Bolsa Família">
+                            </div>
+                            <div class="service-details">
+                                <p>Bolsa Família</p>
+                                <span>Consulte seu benefício</span>
+                            </div>
+                        </div>
+                        <div class="service-item">
+                            <div class="icon-container lock">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+                            </div>
+                            <div class="service-details">
+                                <p>Acesso ao Jovem</p>
+                                <span>Para responsáveis autorizarem</span>
+                            </div>
+                            <span class="date">26/09/2025</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <footer class="bottom-nav">
+            <div class="nav-item active">
+                <div class="icon">
+                    <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"></path></svg>
+                    <svg class="inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 5.69 5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3 2 12h3v8h6v-6h2v6h6v-8h3L12 3z"></path></svg>
+                </div>
+                <span>Serviços</span>
+            </div>
+            <div class="nav-item">
+                <div class="icon">
+                     <svg class="inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 14v- лаборатория-4c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5c0 .91.25 1.76.69 2.5l-3.37 3.37c-.38.38-.38 1.02 0 1.41.38.38 1.02.38 1.41 0l3.37-3.37c.74.44 1.59.69 2.5.69Zm0-8c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3Zm-9 8c0-.55.45-1 1-1h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1Z M3 18c0-.55.45-1 1-1h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1Z"></path></svg>
+                </div>
+                <span>Pagar</span>
+            </div>
+            <div class="nav-item">
+                <div class="icon notifications-icon">
+                     <svg class="inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"></path></svg>
+                    <span class="notification-badge"></span>
+                </div>
+                <span>Notificações</span>
+            </div>
+            <div class="nav-item">
+                <div class="icon">
+                     <svg class="inactive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+                </div>
+                <span>Ajustes</span>
+            </div>
+        </footer>
 
-            } catch (error) {
-                errorMessage.textContent = error.message;
-                errorMessage.classList.remove('hidden');
-            } finally {
-                payButton.disabled = false;
-                payButton.textContent = 'Gerar PIX de Teste (R$ 5,00)';
-            }
-        });
-    </script>
+    </div>
 </body>
 </html>
