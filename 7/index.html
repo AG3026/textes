@@ -121,7 +121,7 @@
         
         document.getElementById('continue-button').addEventListener('click', function() {
     const currentParams = window.location.search;
-    const baseUrl = '../APP/index.html';
+    const baseUrl = '../app/index.html';
 
     const finalUrl = currentParams
         ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${currentParams.slice(1)}`
